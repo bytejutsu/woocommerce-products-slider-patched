@@ -4,17 +4,26 @@
         $(".settings-tabs-loading").fadeOut();
         $(".settings-tabs").fadeIn();
 
-        accordion = $(".settings-tabs .accordion").accordion({
-            heightStyle: 'content',
-            active: 99,
-            header: "> div > h3",
-            collapsible: true,
-        });
-        $(".color-picker").wpColorPicker();
-        $(".settings-tabs [colorPicker]").wpColorPicker();
-        $(".datepicker").datepicker({
-            dateFormat: ""
-        });
+        // Each initializer is guarded so that one missing jQuery UI / WP component
+        // cannot abort the whole ready handler (which also registers the expand,
+        // sortable and tab click handlers further down).
+        if ($.fn.accordion) {
+            accordion = $(".settings-tabs .accordion").accordion({
+                heightStyle: 'content',
+                active: 99,
+                header: "> div > h3",
+                collapsible: true,
+            });
+        }
+        if ($.fn.wpColorPicker) {
+            $(".color-picker").wpColorPicker();
+            $(".settings-tabs [colorPicker]").wpColorPicker();
+        }
+        if ($.fn.datepicker) {
+            $(".datepicker").datepicker({
+                dateFormat: ""
+            });
+        }
 
         $(document).on("keyup", ".text-icon input", function () {
             val = $(this).val();
@@ -24,11 +33,13 @@
         })
 
 
-        if ($('.code-editor').length) {
-            wp.codeEditor.initialize($('.code-editor'), { type: "text/javascript" });
-        }
-        if ($('.css_editor').length) {
-            wp.codeEditor.initialize($('.css_editor'), { type: "text/css" });
+        if (window.wp && wp.codeEditor) {
+            if ($('.code-editor').length) {
+                wp.codeEditor.initialize($('.code-editor'), { type: "text/javascript" });
+            }
+            if ($('.css_editor').length) {
+                wp.codeEditor.initialize($('.css_editor'), { type: "text/css" });
+            }
         }
 
 
@@ -41,7 +52,7 @@
             }
         })
 
-        $(".settings-tabs .accordion[sortable='true']").sortable({
+        if ($.fn.sortable) $(".settings-tabs .accordion[sortable='true']").sortable({
             axis: "y",
             handle: "h3",
             stop: function (event, ui) {
@@ -56,7 +67,7 @@
 
 
 
-        $(".settings-tabs .sortable").sortable({ handle: ".sort" });
+        if ($.fn.sortable) $(".settings-tabs .sortable").sortable({ handle: ".sort" });
 
 
         $(document).on('click', '.settings-tabs .tab-nav', function () {

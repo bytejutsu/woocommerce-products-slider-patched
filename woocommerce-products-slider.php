@@ -183,7 +183,7 @@ class WoocommerceProductsSlider
         wp_register_style('font-awesome-5', wcps_plugin_url . 'assets/global/css/font-awesome-5.css');
 
         wp_register_style('settings-tabs', wcps_plugin_url . 'assets/settings-tabs/settings-tabs.css');
-        wp_register_script('settings-tabs', wcps_plugin_url . 'assets/settings-tabs/settings-tabs.js', array('jquery'));
+        wp_register_script('settings-tabs', wcps_plugin_url . 'assets/settings-tabs/settings-tabs.js', array('jquery', 'jquery-ui-core', 'jquery-ui-sortable', 'jquery-ui-accordion', 'jquery-ui-datepicker', 'wp-color-picker'), wcps_plugin_version . '.1', true);
         //wp_register_script('wcps-layouts-api', wcps_plugin_url.'assets/admin/js/scripts-layouts.js'  , array( 'jquery' ));
         wp_register_script('jquery.lazy', wcps_plugin_url . 'assets/admin/js/jquery.lazy.js', array('jquery'));
 
