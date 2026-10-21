@@ -337,6 +337,22 @@ if (!function_exists('wcps_layout_metabox_content_layout_builder')) {
 
             <?php
 
+            $html = ob_get_clean();
+
+            $field_args = array(
+                'id'        => 'layout_preview',
+                //'parent'		=> '',
+                'title'        => __('Layout preview', 'woocommerce-products-slider'),
+                'details'    => __('Layout preview', 'woocommerce-products-slider'),
+                'type'        => 'custom_html',
+                'html'        => $html,
+                'default'        => '',
+            );
+
+            $settings_tabs_field->generate_field($field_args);
+
+            // Printed outside the custom_html field: wp_kses() would strip the <style> tags
+            // emitted by the element CSS hooks and leave the CSS as visible text.
             if (!empty($layout_elements_data))
                 foreach ($layout_elements_data as $elementGroupIndex => $elementGroupData) {
                     foreach ($elementGroupData as $elementIndex => $elementData) {
@@ -350,21 +366,6 @@ if (!function_exists('wcps_layout_metabox_content_layout_builder')) {
                     }
                 }
 
-            $html = ob_get_clean();
-
-            $args = array(
-                'id'        => 'layout_preview',
-                //'parent'		=> '',
-                'title'        => __('Layout preview', 'woocommerce-products-slider'),
-                'details'    => __('Layout preview', 'woocommerce-products-slider'),
-                'type'        => 'custom_html',
-                'html'        => $html,
-                'default'        => '',
-            );
-
-            $settings_tabs_field->generate_field($args);
-
-            // Printed outside the custom_html field: wp_kses() would strip the <style> tag.
             $custom_scripts = get_post_meta($item_layout_id, 'custom_scripts', true);
             $custom_css = isset($custom_scripts['custom_css']) ? $custom_scripts['custom_css'] : '';
 
