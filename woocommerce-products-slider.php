@@ -38,6 +38,7 @@ class WoocommerceProductsSlider
         require_once(wcps_plugin_dir . 'includes/class-metabox-wcps-layout-hook.php');
         require_once(wcps_plugin_dir . 'includes/functions-layout-hook.php');
         require_once(wcps_plugin_dir . 'includes/functions-layout-element.php');
+        require_once(wcps_plugin_dir . 'includes/functions-layout-element-fixes.php');
 
         require_once(wcps_plugin_dir . 'templates/wcps-slider/wcps-slider-hook.php');
 

@@ -36,6 +36,7 @@ if (!class_exists('settings_tabs_field')) {
         'min'   => true,
         'max'   => true,
         'step'  => true,
+        'colorpicker' => true,
         'data-*' => true,
       ),
       'textarea' => array(
@@ -1222,7 +1223,7 @@ if (!class_exists('settings_tabs_field')) {
       $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
       ob_start();
     ?>
-      <input colorPicker="" name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($css_id); ?>" placeholder="<?php echo esc_attr(esc_attr($placeholder)); ?>" value="<?php echo esc_attr($value); ?>" />
+      <input colorPicker="" class="color-picker" name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($css_id); ?>" placeholder="<?php echo esc_attr(esc_attr($placeholder)); ?>" value="<?php echo esc_attr($value); ?>" />
       <?php
       $input_html = ob_get_clean();
       echo wp_kses(sprintf($field_template, esc_html($title), $input_html, wp_kses_post($details)), $this->allowed_html());

@@ -175,7 +175,11 @@ if (!function_exists('wcps_layout_metabox_content_layout_builder')) {
                 . 'var tag_options_html = layout_elements_option[tag_id];'
                 . 'if (typeof tag_options_html === "undefined") { return; }'
                 . 'var res = tag_options_html.replace(/{input_name}/g, input_name + "[" + id + "]");'
-                . '$(this).parent().parent().children(".elements").append(res);'
+                . 'var $added = $(res);'
+                . '$(this).parent().parent().children(".elements").append($added);'
+                // Initialise widgets inside the newly added element (page-load init does not cover it).
+                . 'if ($.fn.wpColorPicker) { $added.find(".color-picker, [colorpicker]").wpColorPicker(); }'
+                . 'if ($.fn.datepicker) { $added.find(".datepicker").datepicker({ dateFormat: "" }); }'
                 . '});'
                 // Inline onclick handlers on saved elements are stripped by wp_kses(); handle them here.
                 . '$(document).on("click", ".layout-builder .element-title .remove", function() {'

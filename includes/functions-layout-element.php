@@ -289,7 +289,9 @@ function wcps_layout_element_product_category($args)
 
     $product_id = isset($args['product_id']) ? $args['product_id'] : '';
     $elementData = isset($args['elementData']) ? $args['elementData'] : array();
-    $max_count = isset($elementData['max_count']) ? (int) $elementData['max_count'] : '';
+    // Empty max count falls back to the UI default (3) instead of 0, which would hide every term.
+    $max_count = !empty($elementData['max_count']) ? (int) $elementData['max_count'] : 3;
+    $separator = isset($elementData['separator']) && $elementData['separator'] !== '' ? wp_kses_post(wp_specialchars_decode($elementData['separator'], ENT_QUOTES)) : ', ';
     $wrapper_html = isset($elementData['wrapper_html']) ? $elementData['wrapper_html'] : '';
     $wrapper_html = !empty($wrapper_html) ? wp_specialchars_decode($wrapper_html, ENT_QUOTES) : '%s';
 
@@ -317,7 +319,7 @@ function wcps_layout_element_product_category($args)
 
         $categories_html .= '<a href="' . $term_link . '">' . $term_name . '</a>';
         if ($i + 1 < $max_term_limit) {
-            $categories_html .= ', ';
+            $categories_html .= $separator;
         }
 
 
@@ -345,7 +347,9 @@ function wcps_layout_element_product_tag($args)
 
     $product_id = isset($args['product_id']) ? $args['product_id'] : '';
     $elementData = isset($args['elementData']) ? $args['elementData'] : array();
-    $max_count = isset($elementData['max_count']) ? (int) $elementData['max_count'] : '';
+    // Empty max count falls back to the UI default (3) instead of 0, which would hide every term.
+    $max_count = !empty($elementData['max_count']) ? (int) $elementData['max_count'] : 3;
+    $separator = isset($elementData['separator']) && $elementData['separator'] !== '' ? wp_kses_post(wp_specialchars_decode($elementData['separator'], ENT_QUOTES)) : ', ';
     $wrapper_html = isset($elementData['wrapper_html']) ? $elementData['wrapper_html'] : '';
     $wrapper_html = !empty($wrapper_html) ? wp_specialchars_decode($wrapper_html, ENT_QUOTES) : '%s';
 
@@ -373,7 +377,7 @@ function wcps_layout_element_product_tag($args)
 
         $categories_html .= '<a href="' . $term_link . '">' . $term_name . '</a>';
         if ($i + 1 < $max_term_limit) {
-            $categories_html .= ', ';
+            $categories_html .= $separator;
         }
 
 
@@ -1418,12 +1422,15 @@ function wcps_layout_element_css_product_category($args)
     $font_size = isset($elementData['font_size']) ? $elementData['font_size'] : '';
     $font_family = isset($elementData['font_family']) ? $elementData['font_family'] : '';
     $wrapper_margin = isset($elementData['wrapper_margin']) ? $elementData['wrapper_margin'] : '';
-    $text_align = isset($elementData['text_align']) ? (int) $elementData['text_align'] : '';
+    // text_align holds a keyword (left/right/center), not a number: casting to int dropped it.
+    $text_align = isset($elementData['text_align']) ? sanitize_key($elementData['text_align']) : '';
 
 ?>
     <style>
         <?php echo esc_attr('.layout-' . $layout_id); ?><?php echo esc_attr(' .element-' . $element_index); ?> {
-            margin: <?php echo esc_attr($wrapper_margin); ?>;
+            <?php if (!empty($wrapper_margin)) : ?>margin: <?php echo esc_attr($wrapper_margin); ?>;
+            <?php endif; ?><?php if (!empty($text_align)) : ?>text-align: <?php echo esc_attr($text_align); ?>;
+            <?php endif; ?>
         }
 
         <?php echo esc_attr('.layout-' . $layout_id); ?><?php echo esc_attr(' .element-' . $element_index . ' a'); ?> {
@@ -1431,7 +1438,6 @@ function wcps_layout_element_css_product_category($args)
             <?php if (!empty($link_color)) : ?>color: <?php echo esc_attr($link_color); ?>;
             <?php endif; ?><?php if (!empty($font_size)) : ?>font-size: <?php echo esc_attr($font_size); ?>;
             <?php endif; ?><?php if (!empty($font_family)) : ?>font-family: <?php echo esc_attr($font_family); ?>;
-            <?php endif; ?><?php if (!empty($text_align)) : ?>text-align: <?php echo esc_attr($text_align); ?>;
             <?php endif; ?>
         }
     </style>
@@ -1453,12 +1459,14 @@ function wcps_layout_element_css_product_tag($args)
     $font_size = isset($elementData['font_size']) ? $elementData['font_size'] : '';
     $font_family = isset($elementData['font_family']) ? $elementData['font_family'] : '';
     $wrapper_margin = isset($elementData['wrapper_margin']) ? $elementData['wrapper_margin'] : '';
+    $text_align = isset($elementData['text_align']) ? sanitize_key($elementData['text_align']) : '';
 
 
 ?>
     <style>
         <?php echo esc_attr('.layout-' . $layout_id); ?><?php echo esc_attr(' .element-' . $element_index); ?> {
             <?php if (!empty($wrapper_margin)) : ?>margin: <?php echo esc_attr($wrapper_margin); ?>;
+            <?php endif; ?><?php if (!empty($text_align)) : ?>text-align: <?php echo esc_attr($text_align); ?>;
             <?php endif; ?>
         }
 
@@ -1657,22 +1665,27 @@ function wcps_layout_element_css_rating($args)
     $elementData = isset($args['elementData']) ? $args['elementData'] : array();
     $layout_id = isset($args['layout_id']) ? $args['layout_id'] : '';
 
-    $link_color = isset($elementData['link_color']) ? $elementData['link_color'] : '';
+    // The rating options UI saves color / font_size / text_align / margin (not link_color / font_family).
+    $color = isset($elementData['color']) ? $elementData['color'] : '';
     $font_size = isset($elementData['font_size']) ? $elementData['font_size'] : '';
-    $font_family = isset($elementData['font_family']) ? $elementData['font_family'] : '';
     $margin = isset($elementData['margin']) ? $elementData['margin'] : '';
+    $text_align = isset($elementData['text_align']) ? sanitize_key($elementData['text_align']) : '';
 
 
 ?>
     <style>
         <?php echo esc_attr('.layout-' . $layout_id); ?><?php echo esc_attr(' .element-' . $element_index); ?> {
             <?php if (!empty($margin)) : ?>margin: <?php echo esc_attr($margin); ?>;
+            <?php endif; ?><?php if (!empty($text_align)) : ?>text-align: <?php echo esc_attr($text_align); ?>;
             <?php endif; ?>
         }
 
         <?php echo esc_attr('.layout-' . $layout_id); ?><?php echo esc_attr(' .element-' . $element_index . ' .star-rating'); ?> {
             float: none;
-
+            display: inline-block;
+            <?php if (!empty($color)) : ?>color: <?php echo esc_attr($color); ?>;
+            <?php endif; ?><?php if (!empty($font_size)) : ?>font-size: <?php echo esc_attr($font_size); ?>;
+            <?php endif; ?>
         }
     </style>
 <?php
