@@ -63,6 +63,23 @@ if (!class_exists('settings_tabs_field')) {
       return  array_merge($this->allowed(), $this->custom);
     }
 
+    /**
+     * Return the saved value unless it is genuinely absent. The previous
+     * "!empty($value) ? $value : $default" pattern treated a saved 0 / "0"
+     * (e.g. a select set to False) as missing and silently reverted it to
+     * the default on every page load.
+     */
+    public function value_or_default($value, $default)
+    {
+      if (is_array($value)) {
+        return !empty($value) ? $value : $default;
+      }
+      if ($value === '' || $value === null || $value === false) {
+        return $default;
+      }
+      return $value;
+    }
+
 
     //public $asset_dir_url = '';
     public function __construct() {}
@@ -640,7 +657,7 @@ if (!class_exists('settings_tabs_field')) {
         $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
         $default     = isset($option['default']) ? $option['default'] : '';
       }
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       ob_start();
     ?>
       <select <?php if ($multiple) echo 'multiple'; ?> <?php if ($disabled) echo 'disabled'; ?> name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($css_id); ?>">
@@ -692,7 +709,7 @@ if (!class_exists('settings_tabs_field')) {
         $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
         $default     = isset($option['default']) ? $option['default'] : '';
       }
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       //$value	= get_post_meta( $post_id, $id, true );
       $title            = isset($option['title']) ? $option['title'] : "";
       $details             = isset($option['details']) ? $option['details'] : "";
@@ -800,7 +817,7 @@ if (!class_exists('settings_tabs_field')) {
       $field_template     = isset($option['field_template']) ? $option['field_template'] : $this->field_template($option);
       $is_pro     = isset($option['is_pro']) ? $option['is_pro'] : false;
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $title            = isset($option['title']) ? $option['title'] : "";
       $details             = isset($option['details']) ? $option['details'] : "";
       if ($is_pro == true) {
@@ -849,7 +866,7 @@ if (!class_exists('settings_tabs_field')) {
       $field_template     = isset($option['field_template']) ? $option['field_template'] : $this->field_template($option);
       $is_pro     = isset($option['is_pro']) ? $option['is_pro'] : false;
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $title            = isset($option['title']) ? $option['title'] : "";
       $details             = isset($option['details']) ? $option['details'] : "";
       if ($is_pro == true) {
@@ -874,7 +891,7 @@ if (!class_exists('settings_tabs_field')) {
       $field_template     = isset($option['field_template']) ? $option['field_template'] : $this->field_template($option);
       $is_pro     = isset($option['is_pro']) ? $option['is_pro'] : false;
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $title            = isset($option['title']) ? $option['title'] : "";
       $details             = isset($option['details']) ? $option['details'] : "";
       if ($is_pro == true) {
@@ -908,7 +925,7 @@ if (!class_exists('settings_tabs_field')) {
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $title            = isset($option['title']) ? $option['title'] : "";
       $details             = isset($option['details']) ? $option['details'] : "";
-      $option_value = empty($value) ? $default : $value;
+      $option_value = $this->value_or_default($value, $default);
       $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
       ob_start();
     ?>
@@ -931,7 +948,7 @@ if (!class_exists('settings_tabs_field')) {
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $args     = isset($option['args']) ? $option['args'] : "";
       $min = isset($args['min']) ? $args['min'] : '';
       $max = isset($args['max']) ? $args['max'] : '';
@@ -959,7 +976,7 @@ if (!class_exists('settings_tabs_field')) {
       $placeholder     = isset($option['placeholder']) ? $option['placeholder'] : "";
       $value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $is_pro     = isset($option['is_pro']) ? $option['is_pro'] : false;
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $title            = isset($option['title']) ? $option['title'] : "";
@@ -984,7 +1001,7 @@ if (!class_exists('settings_tabs_field')) {
       $placeholder     = isset($option['placeholder']) ? $option['placeholder'] : "";
       $value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $is_pro     = isset($option['is_pro']) ? $option['is_pro'] : false;
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $title            = isset($option['title']) ? $option['title'] : "";
@@ -1009,7 +1026,7 @@ if (!class_exists('settings_tabs_field')) {
       $placeholder     = isset($option['placeholder']) ? $option['placeholder'] : "";
       $value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $is_pro     = isset($option['is_pro']) ? $option['is_pro'] : false;
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $title            = isset($option['title']) ? $option['title'] : "";
@@ -1032,7 +1049,7 @@ if (!class_exists('settings_tabs_field')) {
       $placeholder     = isset($option['placeholder']) ? $option['placeholder'] : "";
       $value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $is_pro     = isset($option['is_pro']) ? $option['is_pro'] : false;
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $title            = isset($option['title']) ? $option['title'] : "";
@@ -1060,7 +1077,7 @@ if (!class_exists('settings_tabs_field')) {
       $style_inline            = isset($style['inline']) ? $style['inline'] : true;
       $option_value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $option_value = !empty($option_value) ? $option_value : $default;
+      $option_value = $this->value_or_default($option_value, $default);
       $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
     ?>
       <div class="setting-field">
@@ -1103,7 +1120,7 @@ if (!class_exists('settings_tabs_field')) {
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $option_value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $option_value = !empty($option_value) ? $option_value : $default;
+      $option_value = $this->value_or_default($option_value, $default);
       $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
       ob_start();
       if (!empty($args))
@@ -1193,7 +1210,7 @@ if (!class_exists('settings_tabs_field')) {
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $title            = isset($option['title']) ? $option['title'] : "";
       $details             = isset($option['details']) ? $option['details'] : "";
       $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
@@ -1217,7 +1234,7 @@ if (!class_exists('settings_tabs_field')) {
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $title            = isset($option['title']) ? $option['title'] : "";
       $details             = isset($option['details']) ? $option['details'] : "";
       $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
@@ -1239,7 +1256,7 @@ if (!class_exists('settings_tabs_field')) {
       $pro_text     = isset($option['pro_text']) ? $option['pro_text'] : '';
       $value     = isset($option['value']) ? $option['value'] : '';
       $default     = isset($option['default']) ? $option['default'] : '';
-      $value = !empty($value) ? $value : $default;
+      $value = $this->value_or_default($value, $default);
       $title            = isset($option['title']) ? $option['title'] : "";
       $details             = isset($option['details']) ? $option['details'] : "";
       $field_name = !empty($parent) ? $parent . '[' . $id . ']' : $id;
